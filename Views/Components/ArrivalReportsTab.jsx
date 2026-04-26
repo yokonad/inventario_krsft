@@ -22,7 +22,7 @@ function ArrivalReportsTab({ reports, filterStatus, onFilterChange, onOpenRespon
   return (
     <div className="space-y-4">
       {/* Filter */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <span className="text-sm font-medium text-gray-600">Estado:</span>
         {STATUS_OPTIONS.map(opt => (
           <button
@@ -40,23 +40,23 @@ function ArrivalReportsTab({ reports, filterStatus, onFilterChange, onOpenRespon
       </div>
 
       {reports.length === 0 ? (
-        <div className="rounded-lg border-2 border-gray-200 bg-white p-12 text-center shadow-sm">
-          <ClipboardDocumentListIcon className="mx-auto size-12 text-gray-300" />
-          <h3 className="mt-3 text-sm font-semibold text-gray-700">No hay reportes de llegada</h3>
-          <p className="mt-1 text-xs text-gray-400">Los reportes aparecerán cuando los supervisores reporten materiales faltantes</p>
+        <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-white py-16 text-center">
+          <ClipboardDocumentListIcon className="mx-auto size-16 text-gray-200 mb-4" />
+          <h3 className="text-lg font-bold text-gray-900 mb-1">No hay reportes de llegada</h3>
+          <p className="text-sm text-gray-400">Los reportes aparecerán cuando los supervisores reporten materiales faltantes.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border-2 border-gray-200 bg-white shadow-sm">
-          <table className="w-full divide-y divide-gray-200 text-sm">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">ID</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">Proyecto</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">Reportado por</th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase text-gray-500">Fecha</th>
-                <th className="px-4 py-3 text-center text-xs font-medium uppercase text-gray-500">Items</th>
-                <th className="px-4 py-3 text-center text-xs font-medium uppercase text-gray-500">Estado</th>
-                <th className="px-4 py-3 text-center text-xs font-medium uppercase text-gray-500">Acción</th>
+        <div className="overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-sm">
+          <table className="w-full divide-y divide-gray-100 text-sm">
+            <thead className="bg-gray-50/80">
+              <tr className="*:px-4 *:py-3 *:text-xs *:font-bold *:uppercase *:tracking-wider *:text-gray-500 *:text-left">
+                <th className="w-16">ID</th>
+                <th className="min-w-[200px]">Proyecto</th>
+                <th className="w-48">Reportado por</th>
+                <th className="w-32">Fecha</th>
+                <th className="w-20 !text-center">Items</th>
+                <th className="w-32 !text-center">Estado</th>
+                <th className="w-28 !text-center">Acción</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">

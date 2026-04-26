@@ -1,9 +1,9 @@
-/**
- * MaterialModal – Create/Edit material with ZNP location (Tailwind, Modal UI).
- */
 import Modal from '../ui/Modal';
 import Button from '../ui/Button';
+import Input from '../ui/Input';
+import Select from '../ui/Select';
 import { CATEGORIES, ZONES, LEVELS, POSITIONS } from '../../utils/constants';
+import { ArchiveBoxIcon, MapPinIcon } from '@heroicons/react/24/outline';
 
 export default function MaterialModal({
     form, updateForm, computedLocationCode,
@@ -13,106 +13,141 @@ export default function MaterialModal({
         <Modal
             open={true}
             onClose={closeModal}
-            title={isEditing ? 'EDITAR MATERIAL' : 'NUEVO MATERIAL'}
+            title={
+                <div className="flex items-center gap-3">
+                    <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                        <ArchiveBoxIcon className="size-5" />
+                    </span>
+                    <span>{isEditing ? 'Editar Material' : 'Nuevo Material'}</span>
+                </div>
+            }
             size="lg"
             hideClose
             footer={
-                <>
-                    <button type="button" onClick={closeModal}
-                        className="rounded-full bg-red-500 px-5 py-2 text-sm font-semibold text-white shadow hover:bg-red-600 transition-colors">
+                <div className="flex items-center justify-end gap-3 w-full">
+                    <Button variant="danger" onClick={closeModal} className="px-8">
                         Cancelar
-                    </button>
-                    <Button variant="primary" type="submit" form="material-form">Guardar Material</Button>
-                </>
+                    </Button>
+                    <Button variant="primary" type="submit" form="material-form" className="px-8 font-bold">
+                        Guardar Material
+                    </Button>
+                </div>
             }
         >
-            <p className="text-sm text-gray-500 mb-4">Registra un nuevo material para control de stock y ubicación ZNP.</p>
-            <form onSubmit={saveMaterial} id="material-form">
+            <div className="mb-6 rounded-xl border border-blue-50 bg-blue-50/30 p-4">
+                <p className="text-sm leading-relaxed text-blue-700/80">
+                    Registra o modifica materiales para el control de stock. Asegúrate de asignar la ubicación correcta en el sistema ZNP para facilitar su búsqueda posterior.
+                </p>
+            </div>
+
+            <form onSubmit={saveMaterial} id="material-form" className="space-y-8">
                 {/* Información General */}
-                <h3 className="text-sm font-bold uppercase tracking-wide text-gray-700 mb-3 flex items-center gap-2">
-                    <span className="h-px flex-1 bg-gray-200" /> Información General <span className="h-px flex-1 bg-gray-200" />
-                </h3>
-                <div className="space-y-4 mb-6">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-0.5">Tipo de Material</label>
-                        <input value={form.nombre} onChange={(e) => updateForm('nombre', e.target.value)} type="text" placeholder="Ej: bridas s.o., codos sw, válvulas"
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:ring-primary" />
+                <section className="space-y-4">
+                    <h3 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-gray-400">
+                        <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                        Información General
+                    </h3>
+                    
+                    <div className="grid grid-cols-1 gap-5">
+                        <Input
+                            label="Tipo de Material"
+                            placeholder="Ej: bridas s.o., codos sw, válvulas"
+                            value={form.nombre}
+                            onChange={(e) => updateForm('nombre', e.target.value)}
+                            required
+                        />
+                        <Input
+                            label="Especificación Técnica"
+                            placeholder='Ej: bridas s.o. de 2" x 150 lb.'
+                            value={form.descripcion}
+                            onChange={(e) => updateForm('descripcion', e.target.value)}
+                        />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-0.5">Especificación Técnica</label>
-                        <input value={form.descripcion} onChange={(e) => updateForm('descripcion', e.target.value)} type="text" placeholder="Ej: bridas s.o. de 2&quot; x 150 lb."
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:ring-primary" />
+
+                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                        <Select
+                            label="Categoría"
+                            value={form.categoria}
+                            onChange={(e) => updateForm('categoria', e.target.value)}
+                            required
+                            options={CATEGORIES.map(cat => ({ value: cat, label: cat }))}
+                            placeholder="Seleccionar categoría..."
+                        />
+                        <Input
+                            label="Unidad de Medida"
+                            placeholder="UND, KG, M, LT"
+                            value={form.unidad}
+                            onChange={(e) => updateForm('unidad', e.target.value)}
+                            required
+                        />
                     </div>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-0.5">Categoría <span className="text-red-500">*</span></label>
-                            <select value={form.categoria} onChange={(e) => updateForm('categoria', e.target.value)} required
-                                className="w-full rounded border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:ring-primary">
-                                <option value="">Seleccionar...</option>
-                                {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                            </select>
+
+                    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                        <Input
+                            label="Cantidad Stock"
+                            type="number"
+                            min="0"
+                            value={form.cantidad}
+                            onChange={(e) => updateForm('cantidad', Number(e.target.value))}
+                            required
+                        />
+                        <div className="space-y-1.5">
+                            <Input
+                                label="Precio Total (S/)"
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                placeholder="0.00"
+                                value={form.precio}
+                                onChange={(e) => updateForm('precio', e.target.value)}
+                            />
+                            {form.precio > 0 && (
+                                <div className="rounded-lg bg-gray-50 px-3 py-1.5 border border-gray-100 flex items-center justify-between">
+                                    <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">P. Unitario</span>
+                                    <span className="text-sm font-bold text-primary tracking-tight">
+                                        S/ {(form.precio / (form.cantidad || 1)).toFixed(2)}
+                                    </span>
+                                </div>
+                            )}
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-0.5">Unidad <span className="text-red-500">*</span></label>
-                            <input value={form.unidad} onChange={(e) => updateForm('unidad', e.target.value)} type="text" required placeholder="UND, KG, M, LT"
-                                className="w-full rounded border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:ring-primary" />
-                        </div>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-0.5">Cantidad <span className="text-red-500">*</span></label>
-                        <input value={form.cantidad} onChange={(e) => updateForm('cantidad', Number(e.target.value))} type="number" min="0" required
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:ring-primary" />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-0.5">Precio Total (S/)</label>
-                        <input value={form.precio} onChange={(e) => updateForm('precio', e.target.value)} type="number" min="0" step="0.01" placeholder="0.00"
-                            className="w-full rounded border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:ring-primary" />
-                        {form.precio > 0 && form.cantidad > 1 && (
-                            <p className="mt-1 text-xs text-gray-500">
-                                Precio unitario: <span className="font-semibold text-primary-700">S/ {(form.precio / form.cantidad).toFixed(2)}</span>
-                            </p>
-                        )}
-                        {form.precio > 0 && form.cantidad === 1 && (
-                            <p className="mt-1 text-xs text-gray-500">
-                                Precio unitario: <span className="font-semibold text-primary-700">S/ {Number(form.precio).toFixed(2)}</span>
-                            </p>
-                        )}
-                    </div>
-                </div>
+                </section>
 
                 {/* Ubicación ZNP */}
-                <h3 className="text-sm font-bold uppercase tracking-wide text-gray-700 mb-3 flex items-center gap-2">
-                    <span className="h-px flex-1 bg-gray-200" /> Ubicación (Sistema ZNP) <span className="h-px flex-1 bg-gray-200" />
-                </h3>
-                <div className="rounded-lg border border-primary-100 bg-primary-50/50 p-4">
-                    <div className="grid grid-cols-3 gap-3 mb-3">
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-0.5">Zona</label>
-                            <select value={form.zona} onChange={(e) => updateForm('zona', e.target.value)}
-                                className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:ring-primary">
-                                {ZONES.map(z => <option key={z} value={z}>{z}</option>)}
-                            </select>
+                <section className="space-y-4">
+                    <h3 className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-gray-400">
+                        <MapPinIcon className="size-3.5 text-primary" />
+                        Ubicación (Sistema ZNP)
+                    </h3>
+                    
+                    <div className="rounded-2xl border border-primary-100 bg-primary-50/30 p-6 space-y-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                            <Select
+                                label="Zona"
+                                value={form.zona}
+                                onChange={(e) => updateForm('zona', e.target.value)}
+                                options={ZONES.map(z => ({ value: z, label: z }))}
+                            />
+                            <Select
+                                label="Nivel"
+                                value={form.nivel}
+                                onChange={(e) => updateForm('nivel', Number(e.target.value))}
+                                options={LEVELS.map(n => ({ value: n, label: n.toString() }))}
+                            />
+                            <Select
+                                label="Posición"
+                                value={form.posicion}
+                                onChange={(e) => updateForm('posicion', Number(e.target.value))}
+                                options={POSITIONS.map(p => ({ value: p, label: p.toString() }))}
+                            />
                         </div>
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-0.5">Nivel</label>
-                            <select value={form.nivel} onChange={(e) => updateForm('nivel', Number(e.target.value))}
-                                className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:ring-primary">
-                                {LEVELS.map(n => <option key={n} value={n}>{n}</option>)}
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-0.5">Posición</label>
-                            <select value={form.posicion} onChange={(e) => updateForm('posicion', Number(e.target.value))}
-                                className="w-full rounded border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:ring-primary">
-                                {POSITIONS.map(p => <option key={p} value={p}>{p}</option>)}
-                            </select>
+                        
+                        <div className="flex flex-col items-center justify-center rounded-xl bg-white border border-primary-200 p-4 shadow-sm">
+                            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-1">Identificador de Ubicación</span>
+                            <span className="text-3xl font-black text-primary font-mono tracking-tighter">{computedLocationCode}</span>
                         </div>
                     </div>
-                    <div className="rounded bg-white border border-primary-200 p-3 text-center">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 mb-1">Código de Ubicación</p>
-                        <p className="text-xl font-bold text-primary-700 font-mono">{computedLocationCode}</p>
-                    </div>
-                </div>
+                </section>
             </form>
         </Modal>
     );

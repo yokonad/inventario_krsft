@@ -37,7 +37,7 @@ export default function LocationModal({
             <form onSubmit={saveLocation} id="location-form">
                 <h3 className="text-sm font-bold uppercase tracking-wide text-gray-700 mb-3">Código de Ubicación (Sistema ZNP)</h3>
                 <div className="rounded-lg border border-primary-100 bg-primary-50/50 p-4">
-                    <div className="grid grid-cols-3 gap-3 mb-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
                         <div>
                             <label className="block text-xs font-semibold text-gray-500 mb-0.5">Zona (A-E)</label>
                             <select value={locationForm.zona} onChange={(e) => updateLocationForm('zona', e.target.value)} required

@@ -30,7 +30,7 @@ function ConfirmModal({
                 </div>
 
                 <h2 className="text-lg font-bold text-gray-900">{title}</h2>
-                <p className="mt-2 text-sm text-pretty text-gray-500 leading-relaxed">{message}</p>
+                <p className="mt-2 text-sm text-wrap text-gray-500 leading-relaxed">{message}</p>
 
                 <footer className="mt-6 flex gap-3">
                     <Button variant="secondary" onClick={onClose} disabled={processing} className="flex-1">

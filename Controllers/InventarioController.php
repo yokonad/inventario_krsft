@@ -223,6 +223,16 @@ class InventarioController extends Controller
                 'estado_ubicacion' => isset($validated['ubicacion']) ? 'asignada' : null,
             ]);
 
+            app(\App\Services\LogKrsftService::class)->log(
+                module: 'inventariokrsft',
+                action: 'producto_creado',
+                message: "Producto creado: {$product->nombre} (SKU: {$product->sku})",
+                level: 'info',
+                userId: auth()->id(),
+                userName: auth()->user()?->name,
+                extra: ['product_id' => $product->id, 'sku' => $product->sku]
+            );
+
             return response()->json([
                 'success' => true,
                 'message' => 'Producto creado correctamente',
@@ -232,6 +242,13 @@ class InventarioController extends Controller
             return response()->json(['success' => false, 'message' => 'Datos inválidos', 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
             Log::error('Error en store', ['error' => $e->getMessage()]);
+            
+            app(\App\Services\LogKrsftService::class)->logError(
+                module: 'inventariokrsft',
+                action: 'create_product_error',
+                message: "Error al crear producto: " . $e->getMessage()
+            );
+
             return response()->json(['success' => false, 'message' => 'Error interno al crear producto'], 500);
         }
     }
@@ -271,6 +288,29 @@ class InventarioController extends Controller
                 $product->update(['precio_unitario' => round($precio / $cantidad, 2)]);
             }
 
+            $beforeData = [
+                'nombre' => $product->getOriginal('nombre'),
+                'cantidad' => $product->getOriginal('cantidad'),
+                'precio' => $product->getOriginal('precio'),
+                'estado' => $product->getOriginal('estado'),
+            ];
+            $afterData = [
+                'nombre' => $product->nombre,
+                'cantidad' => $product->cantidad,
+                'precio' => $product->precio,
+                'estado' => $product->estado,
+            ];
+
+            app(\App\Services\LogKrsftService::class)->log(
+                module: 'inventariokrsft',
+                action: 'producto_actualizado',
+                message: "Producto actualizado: {$product->nombre} (ID: {$id})",
+                level: 'info',
+                userId: auth()->id(),
+                userName: auth()->user()?->name,
+                extra: ['product_id' => $id, 'sku' => $product->sku, 'before' => $beforeData, 'after' => $afterData]
+            );
+
             return response()->json([
                 'success' => true,
                 'message' => 'Producto actualizado correctamente',
@@ -281,6 +321,14 @@ class InventarioController extends Controller
             return response()->json(['success' => false, 'message' => 'Datos inválidos', 'errors' => $e->errors()], 422);
         } catch (\Exception $e) {
             Log::error('Error en update', ['error' => $e->getMessage()]);
+            
+            app(\App\Services\LogKrsftService::class)->logError(
+                module: 'inventariokrsft',
+                action: 'update_product_error',
+                message: "Error al actualizar producto ID {$id}: " . $e->getMessage(),
+                extra: ['product_id' => $id]
+            );
+
             return response()->json(['success' => false, 'message' => 'Error interno al actualizar producto'], 500);
         }
     }
@@ -298,6 +346,16 @@ class InventarioController extends Controller
 
             $product->delete();
 
+            app(\App\Services\LogKrsftService::class)->log(
+                module: 'inventariokrsft',
+                action: 'producto_eliminado',
+                message: "Producto eliminado: {$product->nombre} (ID: {$id})",
+                level: 'warning',
+                userId: auth()->id(),
+                userName: auth()->user()?->name,
+                extra: ['product_id' => $id, 'sku' => $product->sku]
+            );
+
             return response()->json([
                 'success' => true,
                 'message' => 'Producto eliminado correctamente',
@@ -305,6 +363,14 @@ class InventarioController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Error en destroy', ['error' => $e->getMessage()]);
+            
+            app(\App\Services\LogKrsftService::class)->logError(
+                module: 'inventariokrsft',
+                action: 'delete_product_error',
+                message: "Error al eliminar producto ID {$id}: " . $e->getMessage(),
+                extra: ['product_id' => $id]
+            );
+
             return response()->json(['success' => false, 'message' => 'Error interno al eliminar producto'], 500);
         }
     }
@@ -384,6 +450,16 @@ class InventarioController extends Controller
                 'items_count' => count($addedItems),
             ]);
 
+            app(\App\Services\LogKrsftService::class)->log(
+                module: 'inventariokrsft',
+                action: 'add_from_purchase',
+                message: count($addedItems) . " items agregados desde compra lote {$batchId}",
+                level: 'info',
+                userId: auth()->id(),
+                userName: auth()->user()?->name,
+                extra: ['batch_id' => $batchId, 'items_count' => count($addedItems)]
+            );
+
             return response()->json([
                 'success' => true,
                 'message' => count($addedItems) . ' items agregados al inventario',
@@ -395,6 +471,14 @@ class InventarioController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error agregando items a inventario: ' . $e->getMessage());
+            
+            app(\App\Services\LogKrsftService::class)->logError(
+                module: 'inventariokrsft',
+                action: 'add_from_purchase_error',
+                message: "Error al agregar items de compra lote {$batchId}: " . $e->getMessage(),
+                extra: ['batch_id' => $batchId]
+            );
+
             return response()->json(['success' => false, 'message' => 'Error interno al agregar items'], 500);
         }
     }

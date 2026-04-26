@@ -51,7 +51,7 @@ function ActionDropdown({ item, onEdit, onDelete, onVerify, isOpen, onToggle, on
             {showHamburger && (
                 <button
                     onClick={onToggle}
-                    className="inline-flex items-center justify-center rounded-md border border-gray-200 bg-white p-2 text-gray-600 shadow-sm hover:bg-gray-50 transition-colors"
+                    className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white p-1.5 text-gray-400 hover:bg-gray-50 hover:text-gray-600 transition-colors shadow-sm"
                     title="Más opciones"
                 >
                     <Bars3Icon className="size-4" />
@@ -61,7 +61,7 @@ function ActionDropdown({ item, onEdit, onDelete, onVerify, isOpen, onToggle, on
             {showTrash && (
                 <button
                     onClick={() => onDelete(item)}
-                    className="inline-flex items-center justify-center rounded-md border border-red-200 bg-red-50 p-2 text-red-500 shadow-sm hover:bg-red-100 transition-colors"
+                    className="inline-flex items-center justify-center rounded-lg border border-red-100 bg-red-50 p-1.5 text-red-500 hover:bg-red-100 transition-colors shadow-sm"
                     title="Eliminar"
                 >
                     <TrashIcon className="size-4" />
@@ -74,36 +74,36 @@ function ActionDropdown({ item, onEdit, onDelete, onVerify, isOpen, onToggle, on
                     onClick={onClose}
                 >
                     <div
-                        className="w-full max-w-sm rounded-2xl bg-white shadow-2xl border border-gray-200"
+                        className="w-full max-w-sm rounded-2xl bg-white shadow-2xl border-2 border-gray-200"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4">
+                        <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
                             <div>
-                                <h2 className="text-base font-semibold text-gray-900">Acciones</h2>
-                                <p className="text-xs text-gray-500 truncate max-w-[220px]" title={item.nombre}>{item.nombre}</p>
+                                <h2 className="text-base font-bold text-gray-900">Acciones del Material</h2>
+                                <p className="text-xs text-gray-500 truncate max-w-[240px]" title={item.nombre}>{item.nombre}</p>
                             </div>
                             <button
                                 onClick={onClose}
-                                className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+                                className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
                             >
                                 <XMarkIcon className="size-5" />
                             </button>
                         </div>
 
-                        <div className="p-4 flex flex-col gap-2">
+                        <div className="p-5 space-y-3">
                             {actions.map((action) => (
                                 <button
                                     key={action.label}
                                     onClick={action.onClick}
-                                    className={`flex items-center gap-4 rounded-xl border px-4 py-3 text-left transition-all ${action.border}`}
+                                    className={`flex w-full items-center gap-4 rounded-xl border p-4 text-left transition-all ${action.border}`}
                                 >
-                                    <span className={`flex items-center justify-center rounded-xl p-2.5 ${action.iconBg}`}>
+                                    <span className={`flex size-11 items-center justify-center rounded-xl shrink-0 ${action.iconBg}`}>
                                         {action.icon}
                                     </span>
-                                    <span>
-                                        <span className="block text-sm font-semibold text-gray-800">{action.label}</span>
-                                        <span className="block text-xs text-gray-400">{action.description}</span>
-                                    </span>
+                                    <div className="min-w-0">
+                                        <span className="block text-sm font-bold text-gray-900">{action.label}</span>
+                                        <span className="block text-xs text-gray-500 truncate">{action.description}</span>
+                                    </div>
                                 </button>
                             ))}
                         </div>
@@ -147,32 +147,32 @@ export default function InventarioTable({
 
     if (filteredItems.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-16 text-gray-300 mb-4">
+            <div className="flex flex-col items-center justify-center py-20 text-center rounded-xl border-2 border-dashed border-gray-200 bg-white">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-16 text-gray-200 mb-4">
                     <path strokeLinecap="round" strokeLinejoin="round" d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0-3-3m3 3 3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
                 </svg>
-                <h3 className="text-lg font-bold text-gray-900 mb-1">Sin materiales</h3>
-                <p className="text-sm text-gray-500">No se encontraron materiales con los filtros seleccionados.</p>
+                <h3 className="text-lg font-bold text-gray-900 mb-1">Sin materiales registrados</h3>
+                <p className="text-sm text-gray-400">No se encontraron resultados con los filtros actuales.</p>
             </div>
         );
     }
 
     return (
-        <div className="rounded-lg border-2 border-gray-300 shadow-md">
-            <table className="w-full table-fixed divide-y-2 divide-gray-200 bg-white text-sm">
-                <thead className="text-left">
-                    <tr>
-                        <th className="w-[170px] px-4 py-3 font-semibold text-gray-900">Tipo de Material</th>
-                        <th className="w-[200px] px-4 py-3 font-semibold text-gray-900">Especificación Técnica</th>
-                        <th className="w-[130px] px-4 py-3 font-semibold text-gray-900">Categoría</th>
-                        <th className="w-20 px-4 py-3 font-semibold text-gray-900 text-center">Cant.</th>
-                        <th className="w-24 px-4 py-3 font-semibold text-gray-900 text-right">P. Unit.</th>
-                        <th className="w-[130px] px-4 py-3 font-semibold text-gray-900 text-center">Disponibilidad</th>
-                        <th className="w-[140px] px-4 py-3 font-semibold text-gray-900">Proyecto de origen</th>
-                        <th className="w-[110px] px-4 py-3 font-semibold text-gray-900">Ubicación</th>
-                        <th className="w-[110px] px-4 py-3 font-semibold text-gray-900 text-center">Estado</th>
-                        <th className="w-[110px] px-4 py-3 font-semibold text-gray-900 text-center">Verificación</th>
-                        <th className="w-20 px-4 py-3 font-semibold text-gray-900 text-center">Acciones</th>
+        <div className="overflow-x-auto rounded-xl border border-gray-100 bg-white shadow-sm">
+            <table className="w-full min-w-[1200px] table-fixed divide-y divide-gray-100 text-sm">
+                <thead className="bg-gray-50/80">
+                    <tr className="*:px-4 *:py-3 *:text-xs *:font-bold *:uppercase *:tracking-wider *:text-gray-500 *:text-left">
+                        <th className="w-[170px]">Tipo de Material</th>
+                        <th className="w-[200px]">Especificación Técnica</th>
+                        <th className="w-[130px]">Categoría</th>
+                        <th className="w-20 !text-center">Cant.</th>
+                        <th className="w-24 !text-right">P. Unit.</th>
+                        <th className="w-[130px] !text-center">Disponibilidad</th>
+                        <th className="w-[140px]">Proyecto Origen</th>
+                        <th className="w-[110px]">Ubicación</th>
+                        <th className="w-[110px] !text-center">Estado</th>
+                        <th className="w-[110px] !text-center">Verificación</th>
+                        <th className="w-20 !text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -184,7 +184,7 @@ export default function InventarioTable({
                             <Fragment key={item.id}>
                                 <tr className="hover:bg-gray-50 transition-colors">
                                     {/* Tipo de Material */}
-                                    <td className="px-4 py-3 max-w-0">
+                                    <td className="px-4 py-3">
                                         <div className="flex items-center gap-2">
                                             {hasUsage && (
                                                 <button
@@ -199,17 +199,17 @@ export default function InventarioTable({
                                                     )}
                                                 </button>
                                             )}
-                                            <div className="truncate">
+                                            <div className="min-w-0">
                                                 <p className="text-sm font-semibold text-gray-900 truncate">{item.nombre || '—'}</p>
                                                 <p className="text-xs text-gray-500 truncate">{item.sku}</p>
                                             </div>
                                         </div>
                                     </td>
                                     {/* Especificación Técnica */}
-                                    <td className="px-4 py-3 max-w-0">
+                                    <td className="px-4 py-3">
                                         <p className="text-sm text-gray-700 truncate" title={item.descripcion}>{item.descripcion || '—'}</p>
                                     </td>
-                            <td className="px-4 py-3 text-sm text-gray-700 truncate max-w-0">{item.categoria}</td>
+                            <td className="px-4 py-3 text-sm text-gray-700 truncate">{item.categoria}</td>
                             <td className="whitespace-nowrap px-4 py-3 text-center">
                                 <span className="font-mono text-sm font-semibold text-gray-800">{item.cantidad}</span>
                             </td>
@@ -227,13 +227,9 @@ export default function InventarioTable({
                             </td>
                             <td className="whitespace-nowrap px-4 py-3 text-center">
                                 {item.apartado ? (
-                                    <Badge variant="cyan" className="gap-1">
-                                        <MapPinIcon className="size-3" /> Apartado
-                                    </Badge>
+                                    <Badge variant="cyan" icon={<MapPinIcon className="size-3.5" />}>Apartado</Badge>
                                 ) : (
-                                    <Badge variant="emerald" className="gap-1">
-                                        <CheckCircleIcon className="size-3" /> Disponible
-                                    </Badge>
+                                    <Badge variant="emerald" icon={<CheckCircleIcon className="size-3.5" />}>Disponible</Badge>
                                 )}
                             </td>
                             <td className="px-4 py-3">
@@ -254,7 +250,7 @@ export default function InventarioTable({
                                         {item.ubicacion}
                                     </span>
                                 ) : item.apartado ? (
-                                    <span className="inline-flex items-center gap-1 text-xs font-medium text-amber-600">Pendiente</span>
+                                    <Badge variant="amber">Pendiente</Badge>
                                 ) : (
                                     <span className="text-sm text-gray-400">-</span>
                                 )}
@@ -294,7 +290,7 @@ export default function InventarioTable({
                         {isExpanded && hasUsage && (
                             <tr key={`${item.id}-usage`} className="bg-gray-50">
                                 <td colSpan="11" className="px-4 py-3">
-                                    <div className="ml-8 space-y-2">
+                                    <div className="sm:ml-8 space-y-2">
                                         <h4 className="text-xs font-semibold text-gray-700 mb-2">Uso por Proyecto:</h4>
                                         <div className="space-y-1.5">
                                             {item.usage.map((uso, idx) => (

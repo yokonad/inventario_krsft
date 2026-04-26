@@ -36,32 +36,36 @@ export default function InventarioIndex({ auth }) {
                 />
 
                 {/* Tabs */}
-                <div className="border-b border-gray-200">
-                    <div className="-mb-px flex gap-1" role="tablist">
+                <div className="flex flex-wrap gap-8 border-b border-gray-200">
+                    <button
+                        role="tab"
+                        aria-selected={inv.currentTab === 'inventario'}
+                        onClick={() => inv.setCurrentTab('inventario')}
+                        className={`inline-flex items-center gap-2 border-b-2 px-1 py-3 text-xs font-bold uppercase tracking-widest transition-colors -mb-[1px] ${
+                            inv.currentTab === 'inventario' ? 'border-primary text-primary' : 'border-transparent text-gray-400 hover:text-gray-600'
+                        }`}
+                    >
+                        <ClipboardDocumentListIcon className="size-4" /> 
+                        Inventario
+                    </button>
+                    {inv.permissions.respond_reports && (
                         <button
-                            role="tab" aria-selected={inv.currentTab === 'inventario'}
-                            onClick={() => inv.setCurrentTab('inventario')}
-                            className={`flex items-center gap-2 border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
-                                inv.currentTab === 'inventario' ? 'border-primary text-primary' : 'border-transparent text-gray-600 hover:text-gray-700 hover:border-gray-300'
+                            role="tab"
+                            aria-selected={inv.currentTab === 'reportes'}
+                            onClick={() => inv.setCurrentTab('reportes')}
+                            className={`inline-flex items-center gap-2 border-b-2 px-1 py-3 text-xs font-bold uppercase tracking-widest transition-colors -mb-[1px] ${
+                                inv.currentTab === 'reportes' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-400 hover:text-gray-600'
                             }`}
                         >
-                            <ClipboardDocumentListIcon className="size-4" /> Inventario
+                            <ExclamationTriangleIcon className="size-4" /> 
+                            Reportes de Llegada
+                            {inv.pendingArrivalCount > 0 && (
+                                <span className="ml-1 rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700">
+                                    {inv.pendingArrivalCount}
+                                </span>
+                            )}
                         </button>
-                        {inv.permissions.respond_reports && (
-                            <button
-                                role="tab" aria-selected={inv.currentTab === 'reportes'}
-                                onClick={() => inv.setCurrentTab('reportes')}
-                                className={`flex items-center gap-2 border-b-2 px-4 py-2 text-sm font-medium transition-colors ${
-                                    inv.currentTab === 'reportes' ? 'border-red-500 text-red-600' : 'border-transparent text-gray-600 hover:text-gray-700 hover:border-gray-300'
-                                }`}
-                            >
-                                <ExclamationTriangleIcon className="size-4" /> Reportes de Llegada
-                                {inv.pendingArrivalCount > 0 && (
-                                    <span className="inline-flex items-center justify-center rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700">{inv.pendingArrivalCount}</span>
-                                )}
-                            </button>
-                        )}
-                    </div>
+                    )}
                 </div>
 
                 {/* Inventario Tab */}

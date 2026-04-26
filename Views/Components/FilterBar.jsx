@@ -1,10 +1,12 @@
 /**
- * FilterBar – Search + Category/Status filters + New button (Tailwind, cyan accent).
+ * FilterBar – Search + Category/Status filters + New button.
+ * Extended layout, slim profile, no wrapper card.
  */
 import { PlusIcon } from '@heroicons/react/24/outline';
 import { CATEGORIES } from '../utils/constants';
 import SearchInput from './ui/SearchInput';
 import Button from './ui/Button';
+import Select from './ui/Select';
 
 export default function FilterBar({
     searchQuery, onSearchChange,
@@ -14,41 +16,46 @@ export default function FilterBar({
     canCreate,
 }) {
     return (
-        <div className="rounded-lg border-2 border-gray-200 bg-white p-6 shadow-sm">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+        <div className="flex flex-wrap items-end gap-4">
+            {/* Search — grows to fill available space */}
+            <div className="min-w-[220px] flex-1">
                 <SearchInput
                     value={searchQuery}
                     onChange={onSearchChange}
-                    placeholder="Buscar por nombre..."
-                    className="flex-1"
+                    placeholder="Buscar por nombre, SKU o especificación..."
                 />
-                <div className="sm:w-44">
-                    <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Categoría</label>
-                    <select
+            </div>
+
+            {/* Filters — fixed widths, right-aligned group */}
+            <div className="flex flex-wrap items-end gap-3">
+                <div className="w-48">
+                    <Select
                         value={filterCategory}
                         onChange={(e) => onCategoryChange(e.target.value)}
-                        className="w-full rounded border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:ring-primary"
+                        placeholder="Todas las categorías"
                     >
-                        <option value="">Todas</option>
                         {CATEGORIES.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
-                    </select>
+                    </Select>
                 </div>
-                <div className="sm:w-40">
-                    <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Estado</label>
-                    <select
+                <div className="w-44">
+                    <Select
                         value={filterStatus}
                         onChange={(e) => onStatusChange(e.target.value)}
-                        className="w-full rounded border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-primary focus:ring-primary"
+                        placeholder="Todos los estados"
                     >
-                        <option value="">Todos</option>
-                        <option value="activo">Activo</option>
-                        <option value="pendiente">Pendiente</option>
+                        <option value="activo">Aprobado</option>
+                        <option value="pendiente">Sin Aprobar</option>
                         <option value="rechazado">Rechazado</option>
-                    </select>
+                    </Select>
                 </div>
                 {canCreate && (
-                    <Button variant="primary" onClick={() => onAddClick()} className="gap-2 whitespace-nowrap">
-                        <PlusIcon className="size-4" /> Nuevo Material
+                    <Button
+                        variant="primary"
+                        onClick={() => onAddClick()}
+                        className="gap-2 px-6 font-bold"
+                    >
+                        <PlusIcon className="size-4" />
+                        Nuevo Material
                     </Button>
                 )}
             </div>
