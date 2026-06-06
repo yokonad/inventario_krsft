@@ -1,5 +1,4 @@
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import Button from './ui/Button';
 
 /**
  * PageHeader – Module header with back navigation, icon and title.
@@ -9,10 +8,14 @@ export default function PageHeader({ title, subtitle, icon, children }) {
     return (
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-100 pb-6">
             <div className="flex items-center gap-4">
-                <Button variant="primary" size="md" onClick={() => window.history.back()} className="gap-2">
+                <button
+                    type="button"
+                    onClick={() => window.history.back()}
+                    className="inline-flex items-center justify-center gap-2 rounded bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary-700"
+                >
                     <ArrowLeftIcon className="size-4" />
                     Volver
-                </Button>
+                </button>
                 <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
                     <span className="flex size-11 items-center justify-center rounded-xl bg-primary text-white">
                         {icon}
